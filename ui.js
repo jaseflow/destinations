@@ -31,15 +31,20 @@ jQuery(function($) {
 		$('.down-arrow').css('-webkit-animation','floating 1s infinite')
 	}, 1500);
 
-	$window.scroll(function() {
+	var stuck = false;
 
+	var throttled = _.throttle(updatePosition, 100);
+	$(window).scroll(throttled);
 
-		if($window.scrollTop() > stickyTop) {
+	function updatePosition() {
+		if($window.scrollTop() >= stickyTop && !stuck) {
 			$stickyEl.addClass('strip--sticky');
+			stuck = true;
 		}
 
-		else {
-			$stickyEl.attr('class','strip')
+		else if ($window.scrollTop() < stickyTop && stuck) {
+			$stickyEl.attr('class','strip');
+			stuck = false;
 		}
 
 		if($window.scrollTop() > (sportTop - stickyHeight)) {
@@ -49,8 +54,6 @@ jQuery(function($) {
 		if($window.scrollTop() >= (windowHeight - stickyTop)) {
 			$('.facts').addClass('facts--visible');
 		}
-
-
-	});
+	}
 
 });
